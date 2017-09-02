@@ -1,0 +1,11 @@
+{
+  "name": "telegram-futsal-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:mylsb/telegram-futsal-bot.git",
+  "author": "Mitchell Stewart <mitchell.stewart@mylsb.email>",
+  "license": "MIT",
+  "devDependencies": {
+    "babel-cli": "^6.26.0"
+  }
+}
