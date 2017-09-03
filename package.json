@@ -6,11 +6,13 @@
   "author": "Mitchell Stewart <mitchell.stewart@mylsb.email>",
   "license": "MIT",
   "scripts": {
-    "build": "babel src -d lib"
+    "build": "babel src -d lib",
+    "start": "node lib/index.js"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.0"
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2017": "^6.24.1"
   },
   "dependencies": {
     "axios": "^0.16.2",
