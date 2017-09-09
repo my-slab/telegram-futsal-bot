@@ -14,8 +14,7 @@
     "babel-preset-env": "^1.6.0"
   },
   "dependencies": {
-    "axios": "^0.16.2",
-    "ramda": "^0.24.1",
+    "puppeteer": "^0.10.2",
     "telegraf": "^3.10.1"
   }
 }
