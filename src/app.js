@@ -11,6 +11,12 @@ const init = async () => {
     return ctx.reply(result);
   });
 
+  bot.hears('fixture', async ctx => {
+    ctx.reply('👀');
+    const result = await fixture();
+    return ctx.reply(result);
+  });
+
   bot.hears('siq', async ctx => {
     return ctx.reply('🔥');
   });
