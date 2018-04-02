@@ -1,14 +1,23 @@
-import puppeteer from 'puppeteer';
+'use strict';
 
-const FIXTURE_URL =
-  'https://web.fixionline.com/anonymous/external/webView.aspx?fixicenID=117&tab=1&sportid=&divisionid=&seasonid=';
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
-export default async () => {
+var _puppeteer = require('puppeteer');
+
+var _puppeteer2 = _interopRequireDefault(_puppeteer);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const FIXTURE_URL = 'https://web.fixionline.com/anonymous/external/webView.aspx?fixicenID=117&tab=1&sportid=&divisionid=&seasonid=';
+
+exports.default = async () => {
   console.log('launching browser...');
-  const browser = await puppeteer.launch();
+  const browser = await _puppeteer2.default.launch();
   const page = await browser.newPage();
   await page.goto(FIXTURE_URL, { waitUntil: 'networkidle' });
-  await page.click('a#rptComps_ctl28_LinkButton1');
+  await page.click('a#rptComps_ctl29_LinkButton1');
   await page.waitForSelector('a[title="CC Kicks"]');
   await page.click('a[title="CC Kicks"]');
   await page.waitForSelector('div.MatchRow');

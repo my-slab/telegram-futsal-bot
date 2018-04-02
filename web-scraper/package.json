@@ -1,0 +1,25 @@
+{
+  "author": "Mitchell Stewart <mitchell.stewart@mylsb.email>",
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "license": "MIT",
+  "main": "lib/index.js",
+  "name": "telegram-futsal-bot",
+  "repository": "git@github.com:mylsb/telegram-futsal-bot.git",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "babel src -d lib",
+    "start": "node lib/index.js",
+    "test": "jest"
+  },
+  "dependencies": {
+    "puppeteer": "^0.10.2",
+    "telegraf": "^3.10.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.0"
+  }
+}
