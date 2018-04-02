@@ -3,7 +3,7 @@ import puppeteer from 'puppeteer';
 import { FIXTURE_URL } from './constants';
 
 export const getNextMatch = async () => {
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
   const page = await browser.newPage();
   await page.goto(FIXTURE_URL, { waitUntil: 'networkidle' });
   await page.click('a#upcommingmatchtab');
