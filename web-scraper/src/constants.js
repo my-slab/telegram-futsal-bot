@@ -17,11 +17,12 @@ const fixtureOpts = {
 const competitionOpts = {
   div: DIVISION_ID,
   sea: SEASON_ID,
-  sp: SPORT_ID
+  sp: SPORT_ID,
+  sportFixId: SPORT_FIX_ID
 };
 
 export const FIXTURE_URL =
   URL + FIXTURE_ROUTE + '?' + querystring.encode(fixtureOpts);
 
 export const COMPETITION_URL =
-  URL + COMPETITION_ROUTE + '?' + querystring.encode(ladderOpts);
+  URL + COMPETITION_ROUTE + '?' + querystring.encode(competitionOpts);

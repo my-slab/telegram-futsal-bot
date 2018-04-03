@@ -1,4 +1,4 @@
-import { getNextMatch } from './scraper';
+import { getTable, getNextMatch } from './scraper';
 import bot, { getUsername } from './bot';
 
 const init = async () => {
@@ -13,6 +13,17 @@ const init = async () => {
     } catch (e) {
       console.log(e);
       ctx.reply('️⛔️ Something went wrong');
+    }
+  });
+
+  bot.command('table', async ctx => {
+    ctx.reply('🔝');
+    try {
+      const result = await getTable();
+      return ctx.reply(result);
+    } catch (e) {
+      console.log(e);
+      ctx.reply('⛔️ Something went wrong');
     }
   });
 

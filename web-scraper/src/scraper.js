@@ -1,6 +1,6 @@
 import puppeteer from 'puppeteer';
 
-import { FIXTURE_URL } from './constants';
+import { COMPETITION_URL, FIXTURE_URL } from './constants';
 
 export const getNextMatch = async () => {
   const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
@@ -17,6 +17,22 @@ export const getNextMatch = async () => {
       .innerText;
 
     return `${match} vs ${opponent}`;
+  });
+  await browser.close();
+  return result;
+};
+
+export const getTable = async () => {
+  const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+  const page = await browser.newPage();
+  await page.goto(COMPETITION_URL, { waitUntil: 'networkidle' });
+  await page.click('a#ladderTab');
+  const result = await page.evaluate(() => {
+    return (
+      Array.from(document.querySelectorAll('table#ladderTable tbody tr'))
+        .map(elem => elem.innerText)
+        .reduce((acc, elem) => acc + elem + '\n', '`') + '`'
+    );
   });
   await browser.close();
   return result;
