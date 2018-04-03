@@ -1,5 +1,6 @@
 import { getTable, getNextMatch } from './scraper';
 import bot, { getUsername } from './bot';
+import Extra from 'telegraf/extra';
 
 const init = async () => {
   bot.options.username = await getUsername(bot);
@@ -20,7 +21,7 @@ const init = async () => {
     ctx.reply('🔝');
     try {
       const result = await getTable();
-      return ctx.reply(result);
+      return ctx.reply(result, Extra.markdown());
     } catch (e) {
       console.log(e);
       ctx.reply('⛔️ Something went wrong');

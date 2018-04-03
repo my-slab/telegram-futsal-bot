@@ -28,10 +28,20 @@ export const getTable = async () => {
   await page.goto(COMPETITION_URL, { waitUntil: 'networkidle' });
   await page.click('a#ladderTab');
   const result = await page.evaluate(() => {
-    return (
-      Array.from(document.querySelectorAll('table#ladderTable tbody tr'))
-        .map(elem => elem.innerText)
-        .reduce((acc, elem) => acc + elem + '\n', '`') + '`'
+    const [head, ...rest] = Array.from(
+      document.querySelectorAll('table#ladderTable tbody tr')
+    ).map(elem => '|' + elem.innerText.split('\t').join('|') + '|');
+    const divider =
+      '|' +
+      head
+        .split('|')
+        .filter(elem => elem !== '')
+        .map(elem => Array(elem.length + 1).join('-'))
+        .join('|') +
+      '|';
+    return [head, divider, ...rest].reduce(
+      (acc, elem) => acc + elem + '\n',
+      ''
     );
   });
   await browser.close();
