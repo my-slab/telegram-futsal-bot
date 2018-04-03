@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "puppeteer": "^0.10.2",
-    "telegraf": "^3.10.1"
+    "telegraf": "^3.10.1",
+    "text-table": "^0.2.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
