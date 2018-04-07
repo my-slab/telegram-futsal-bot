@@ -21,8 +21,15 @@ const competitionOpts = {
   sportFixId: SPORT_FIX_ID
 };
 
-export const FIXTURE_URL =
-  URL + FIXTURE_ROUTE + '?' + querystring.encode(fixtureOpts);
+const buildUrl = (url, opts) =>
+  URL + COMPETITION_ROUTE + '?' + querystring.encode(opts);
 
-export const COMPETITION_URL =
-  URL + COMPETITION_ROUTE + '?' + querystring.encode(competitionOpts);
+export const callbackButtons = {
+  IN: 'in',
+  MAYBE: 'maybe',
+  OUT: 'out'
+};
+
+export const COMPETITION_URL = buildUrl(COMPETITION_ROUTE, competitionOpts);
+
+export const FIXTURE_URL = buildUrl(FIXTURE_ROUTE, fixtureOpts);

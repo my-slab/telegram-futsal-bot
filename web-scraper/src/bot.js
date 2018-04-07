@@ -2,6 +2,7 @@ import Telegraf from 'telegraf';
 import Extra from 'telegraf/extra';
 import Markup from 'telegraf/markup';
 
+import { callbackButtons } from './constants';
 import { getNextMatch, getTable } from './scraper';
 
 const API_TOKEN = process.env.TELEGRAM_API_TOKEN || '';
@@ -14,12 +15,14 @@ const getUsername = async ({ telegram }) => {
 
 const commandAvailable = async ctx => {
   try {
+    const { IN, MAYBE, OUT } = callbackButtons;
     return ctx.reply(
       '<b>In 👍</b> or <b>Out 👎</b>',
       Extra.HTML().markup(m =>
         m.inlineKeyboard([
-          m.callbackButton('In', 'In'),
-          m.callbackButton('Out', 'Out')
+          m.callbackButton(IN, IN),
+          m.callbackButton(OUT, OUT),
+          m.callbackButton(MAYBE, MAYBE)
         ])
       )
     );
@@ -52,6 +55,7 @@ const commandTable = async ctx => {
 };
 
 const onCallback = async ctx => {
+  const { IN, MAYBE, OUT } = callbackButtons;
   const { data, from: { username } } = ctx.callbackQuery;
   ctx.answerCbQuery(`${username}: ${data}`);
 };
