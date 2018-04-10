@@ -2,44 +2,58 @@ import Telegraf from 'telegraf';
 import Extra from 'telegraf/extra';
 import Markup from 'telegraf/markup';
 
-import { callbackButtons } from './constants';
+import { callbackButtons, TELEGRAM_API_TOKEN } from './constants';
 import { getNextMatch, getTable } from './scraper';
 
-const API_TOKEN = process.env.TELEGRAM_API_TOKEN || '';
-const bot = new Telegraf(API_TOKEN);
+const state = {
+  fixture: {
+    id: null,
+    in: new Set(),
+    maybe: new Set(),
+    out: new Set(),
+    string: null
+  }
+};
+const bot = new Telegraf(TELEGRAM_API_TOKEN);
 
 const getUsername = async ({ telegram }) => {
   const { username } = await telegram.getMe();
   return username;
 };
 
-const commandAvailable = async ctx => {
-  try {
-    const { IN, MAYBE, OUT } = callbackButtons;
-    return ctx.reply(
-      '<b>In 👍</b> or <b>Out 👎</b>',
-      Extra.HTML().markup(m =>
-        m.inlineKeyboard([
-          m.callbackButton(IN, IN),
-          m.callbackButton(OUT, OUT),
-          m.callbackButton(MAYBE, MAYBE)
-        ])
-      )
-    );
-  } catch (e) {
-    console.log(e);
-    ctx.reply('⛔️ Something went wrong');
-  }
+const availabilityKeyboard = () => {
+  const { IN, MAYBE, OUT } = callbackButtons;
+
+  return Extra.HTML().markup(m =>
+    m.inlineKeyboard([
+      m.callbackButton(IN.toUpperCase(), IN),
+      m.callbackButton(OUT.toUpperCase(), OUT),
+      m.callbackButton(MAYBE.toUpperCase(), MAYBE)
+    ])
+  );
+};
+
+const updateAvailability = (status, player) => {
+  Object.values(callbackButtons).map(elem =>
+    state.fixture[elem].delete(player)
+  );
+  state.fixture[status.toLowerCase()].add(player);
 };
 
 const commandFixture = async ctx => {
   ctx.reply('📅');
   try {
-    const result = await getNextMatch();
-    return ctx.reply(result);
+    let result = await getNextMatch();
+    state.fixture.string = result;
+
+    result = await ctx.reply(result, availabilityKeyboard());
+
+    const { chat: { id: chatId }, message_id: messageId } = result;
+    state.fixture.chatId = chatId;
+    state.fixture.messageId = messageId;
   } catch (e) {
     console.log(e);
-    ctx.reply('️⛔️ Something went wrong');
+    await ctx.reply('️Something went wrong');
   }
 };
 
@@ -47,22 +61,43 @@ const commandTable = async ctx => {
   ctx.reply('🔝');
   try {
     const result = await getTable();
-    return ctx.replyWithMarkdown(result);
+    await ctx.replyWithMarkdown(result);
   } catch (e) {
     console.log(e);
-    ctx.reply('⛔️ Something went wrong');
+    await ctx.reply('Something went wrong');
   }
 };
 
 const onCallback = async ctx => {
-  const { IN, MAYBE, OUT } = callbackButtons;
-  const { data, from: { username } } = ctx.callbackQuery;
-  ctx.answerCbQuery(`${username}: ${data}`);
+  try {
+    const { data, from: { username } } = ctx.callbackQuery;
+
+    updateAvailability(data, username);
+
+    let result = Object.values(callbackButtons)
+      .map(elem => [elem, state.fixture[elem]])
+      .map(
+        ([key, value]) =>
+          `<b>${key.toUpperCase()}:</b>\n` +
+          Array.from(value)
+            .map(value => '+ ' + value + '\n')
+            .join('')
+      )
+      .join('\n');
+
+    result = state.fixture.string + '\n\n' + result;
+
+    result = await ctx.editMessageText(result, availabilityKeyboard());
+    const { chat: { id: chatId }, message_id: messageId } = result;
+    state.fixture.chatId = chatId;
+    state.fixture.messageId = messageId;
+  } catch (e) {
+    console.log('e');
+  }
 };
 
 export const setup = async bot => {
   bot.options.username = await getUsername(bot);
-  bot.command('available', commandAvailable);
   bot.command('fixture', commandFixture);
   bot.command('table', commandTable);
   bot.on('callback_query', onCallback);
