@@ -1,6 +1,6 @@
-import Telegraf from 'telegraf';
 import Extra from 'telegraf/extra';
 import Markup from 'telegraf/markup';
+import Telegraf from 'telegraf';
 import { values } from 'lodash';
 
 import { callbackButtons, TELEGRAM_API_TOKEN } from './constants';
@@ -34,8 +34,10 @@ const availabilityKeyboard = () => {
   );
 };
 
-const updateAvailability = (status, player) => {
-  values(callbackButtons).map(elem => state.fixture[elem].delete(player));
+const updateAvailability = (status, [firstName, username]) => {
+  values(callbackButtons).map(elem =>
+    state.fixture[elem].delete(username || firstName)
+  );
   state.fixture[status.toLowerCase()].add(player);
 };
 
@@ -69,9 +71,12 @@ const commandTable = async ctx => {
 
 const onCallback = async ctx => {
   try {
-    const { data, from: { username } } = ctx.callbackQuery;
+    const {
+      data,
+      from: { first_name: firstName, username }
+    } = ctx.callbackQuery;
 
-    updateAvailability(data, username);
+    updateAvailability(data, [firstName, username]);
 
     let result = values(callbackButtons)
       .map(elem => [elem, state.fixture[elem]])
